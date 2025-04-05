@@ -1,11 +1,16 @@
-// server.js
 const express = require('express');
 const dotenv = require('dotenv');
 const axios = require('axios');
-const app = express();
+const crypto = require('crypto');
 
 dotenv.config();
+const app = express();
 app.use(express.json());
+
+// 🔐 SHA256 암호화 함수
+function hashPhone(phone) {
+  return crypto.createHash('sha256').update(phone).digest('hex');
+}
 
 app.get('/', (req, res) => {
   res.send('Meta 전환 API 리드 전송 서버 실행 중!');
@@ -13,6 +18,7 @@ app.get('/', (req, res) => {
 
 app.post('/meta/lead', async (req, res) => {
   const { phone } = req.body;
+  const hashedPhone = hashPhone(phone); // ✅ 전화번호 암호화
 
   try {
     const response = await axios.post(
@@ -23,7 +29,7 @@ app.post('/meta/lead', async (req, res) => {
             event_name: "Lead",
             event_time: Math.floor(Date.now() / 1000),
             user_data: {
-              ph: phone
+              ph: hashedPhone
             },
             action_source: "website"
           }
