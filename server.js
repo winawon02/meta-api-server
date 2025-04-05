@@ -38,9 +38,11 @@ app.post('/meta/lead', async (req, res) => {
     );
 
     res.status(200).json({ message: '전환 API 호출 완료', data: response.data });
+    console.log(`전환 API 호출 완료`);
   } catch (error) {
     console.error(error.response?.data || error.message);
     res.status(500).json({ message: '전환 API 호출 실패', error: error.response?.data });
+    console.log(`전환 API 호출 실패`);
   }
 });
 
